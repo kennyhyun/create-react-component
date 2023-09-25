@@ -12,6 +12,9 @@ module.exports = {
     publicPath: '/build/',
     umdNamedDefine: true
   },
+  optimization: {
+    minimize: false,
+  },
   module: {
     rules: [
       {
@@ -26,5 +29,6 @@ module.exports = {
       },
     ]
   },
+externals: ['react', 'react-dom', /@mui\/material.*/],
 }
 

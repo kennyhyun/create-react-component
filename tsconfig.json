@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "./build/",
     "noImplicitAny": true,
+    "lib": ["es6", "dom", "ES2017.object"],
     "module": "es6",
     "target": "es5",
     "jsx": "react",

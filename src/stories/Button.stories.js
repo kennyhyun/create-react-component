@@ -1,4 +1,4 @@
-import { Button } from './Button';
+import { Button } from '..';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -19,13 +19,13 @@ export default {
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Primary = {
   args: {
-    primary: true,
     label: 'Button',
   },
 };
 
 export const Secondary = {
   args: {
+    secondary: true,
     label: 'Button',
   },
 };
