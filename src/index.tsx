@@ -1,5 +1,5 @@
-import React from "react";
-import MuiButton, { ButtonProps as MuiButtonProps } from "@mui/material/Button";
+import React from 'react';
+import MuiButton, { ButtonProps as MuiButtonProps } from '@mui/material/Button';
 
 export const Hello = () => <>Hello</>;
 
@@ -20,7 +20,7 @@ const getColor = (colors: ColorParams): any =>
   Object.entries(colors).reduce((acc, [key, value]) => {
     if (acc) return acc;
     if (value) return key;
-  }, "");
+  }, '');
 
 export const Button = ({
   color: colorParam,
@@ -36,9 +36,7 @@ export const Button = ({
 }: ButtonProps) => (
   <MuiButton
     color={
-      colorParam ||
-      getColor({ primary, secondary, success, error, info, warning }) ||
-      "primary"
+      colorParam || getColor({ primary, secondary, success, error, info, warning }) || 'primary'
     }
     variant={variant}
     {...props}
