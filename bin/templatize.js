@@ -93,7 +93,7 @@ Promise.resolve()
 
     // throw new Error('test');
     // publish into template branch using gh-pages
-    await exec('npx', ['gh-pages', '-d', 'template', '-b', 'template']);
+    await exec('npx', ['gh-pages', '-d', 'template', '-b', 'template', '-t']);
     await fsp.rm(TEMPLATE_DIR, { recursive: true });
   })
   .catch(e => console.error(e.message));
