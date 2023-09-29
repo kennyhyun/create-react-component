@@ -20,7 +20,8 @@ const exec = (cmd, args) =>
       rej(new Error(err));
     });
     subp.on('close', code => {
-      res(code);
+      if (code) rej(code);
+      else res(code);
     });
   });
 
@@ -31,25 +32,50 @@ const {
   SOURCE_BRANCH = 'source',
 } = process.env;
 
-Promise.resolve().then(async () => {
-  // move existing to backup
-  await fsp.mkdir(BACKUP_DIR, { recursive: true });
-  const existing = await fsp.stat(TEMPLATE_DIR).catch(() => {});
-  if (existing) {
-    fsp.rename(TEMPLATE_DIR, path.join(BACKUP_DIR, [TEMPLATE_DIR, Date.now()].join('.')));
-  }
-  // clone current branch into template dir
+Promise.resolve()
+  .then(async () => {
+    // move existing to backup
+    await fsp.mkdir(BACKUP_DIR, { recursive: true });
+    const existing = await fsp.stat(TEMPLATE_DIR).catch(() => {});
+    if (existing) {
+      fsp.rename(TEMPLATE_DIR, path.join(BACKUP_DIR, [TEMPLATE_DIR, Date.now()].join('.')));
+    }
 
-  await exec('git', ['clone', '.', '--depth=1', '-b', SOURCE_BRANCH, TEMPLATE_DIR]);
-  await fsp.rmdir(path.join(TEMPLATE_DIR, '.git'), { recursive: true });
+    // clone source branch into template dir
+    await exec('git', [
+      'clone',
+      `file://${process.cwd()}`,
+      '--depth=1',
+      '-b',
+      SOURCE_BRANCH,
+      TEMPLATE_DIR,
+    ]);
+    await fsp.rm(path.join(TEMPLATE_DIR, '.git'), { recursive: true });
 
-  // replace required
-  //# replace name, description in package.json for template
-  //# publish into template branch using gh-pages
-  // remove template scripts from package.json
-});
-/*
-const git = GIT('.');
+    // replace name, description in package.json for template
+    await exec('npx', [
+      'replace-in-file',
+      '"@kennyhyun/create-react-component"',
+      '"{{name}}"',
+      './template/package.json',
+    ]);
+    await exec('npx', [
+      'replace-in-file',
+      '"description": ""',
+      '"description": "{{description}}"',
+      './template/package.json',
+    ]);
+    // remove template scripts from package.json
+    await exec('npx', [
+      'replace-in-file',
+      '"publish:template": ".*",',
+      '',
+      './template/package.json',
+      '--isRegex',
+    ]);
 
-console.log(git.status());
-*/
+    // publish into template branch using gh-pages
+    await exec('npx', ['gh-pages', '-d', 'template', '-b', 'template']);
+    await fsp.rm(TEMPLATE_DIR, { recursive: true });
+  })
+  .catch(e => console.error(e.message));
