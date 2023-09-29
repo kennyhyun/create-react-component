@@ -89,6 +89,7 @@ Promise.resolve()
     ]);
 
     await fsp.rm(path.join(TEMPLATE_DIR, 'bin', 'templatize.js'));
+    await fsp.rm(path.join(TEMPLATE_DIR, 'pnpm-lock.yaml'));
 
     // throw new Error('test');
     // publish into template branch using gh-pages
