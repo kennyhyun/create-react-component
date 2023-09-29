@@ -5,9 +5,8 @@
   "main": "build/main.js",
   "scripts": {
     "publish:template": "node bin/templatize.js",
+    "prepublish:pages": "npx ncp README.md src/README.mdx",
     "publish:pages": "npm run build-storybook && gh-pages -d storybook-static",
-    "start:demo": "pnpm --filter demo start",
-    "start": "run-p start:demo build:watch",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix --max-warnings=0",
     "format": "prettier src --write",

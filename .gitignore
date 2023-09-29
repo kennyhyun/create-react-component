@@ -27,3 +27,5 @@ yarn-error.log*
 /template
 
 .eslintcache
+
+src/README.mdx
