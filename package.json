@@ -4,8 +4,8 @@
   "description": "{{description}}",
   "main": "build/main.js",
   "scripts": {
-    "start:demo": "pnpm --filter demo start",
-    "start": "run-p start:demo build:watch",
+    "prepublish:pages": "npx ncp README.md src/README.mdx",
+    "publish:pages": "npm run build-storybook && gh-pages -d storybook-static",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix --max-warnings=0",
     "format": "prettier src --write",
@@ -48,6 +48,7 @@
     "eslint": "^8.50.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-react": "^7.33.2",
+    "gh-pages": "^6.0.0",
     "inquirer": "^9.2.11",
     "mustache": "^4.2.0",
     "npm-run-all": "^4.1.5",
