@@ -4,7 +4,7 @@
   "description": "{{description}}",
   "main": "build/main.js",
   "scripts": {
-    ""
+    
     "start:demo": "pnpm --filter demo start",
     "start": "run-p start:demo build:watch",
     "lint": "eslint src",
