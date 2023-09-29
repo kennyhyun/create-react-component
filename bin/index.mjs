@@ -2,14 +2,16 @@
 
 import { strict as assert } from 'assert';
 import { exec as execSync } from 'child_process';
-import fs from "fs";
-import path from "path";
-import util from "util";
-import mustache from "mustache";
-import inquirer from "inquirer";
+import fs from 'fs';
+import path from 'path';
+import util from 'util';
+import mustache from 'mustache';
+import inquirer from 'inquirer';
 // import fetch from "node-fetch";
 
-const { versions: { node: nodeVersion = '' } } = process;
+const {
+  versions: { node: nodeVersion = '' },
+} = process;
 if (nodeVersion.split('.').shift() < 18) throw new Error('Please use node version 18 or later');
 
 const exec = util.promisify(execSync);
@@ -18,7 +20,7 @@ run();
 
 async function run() {
   const gitRepo = await getGitRepo(process.argv[2]);
-  const tmpDir = path.join(process.cwd(), ".tmp");
+  const tmpDir = path.join(process.cwd(), '.tmp');
   await fs.promises.rm(tmpDir, { recursive: true }).catch(console.log);
 
   console.log('Cloning', gitRepo, 'into', tmpDir, process.argv);
@@ -26,8 +28,8 @@ async function run() {
 
   console.log({ stdout, stderr });
 
-  const npmInitFile = path.join(tmpDir, "npm-init.json");
-  const templateDir = path.join(tmpDir, ".");
+  const npmInitFile = path.join(tmpDir, 'npm-init.json');
+  const templateDir = path.join(tmpDir, '.');
   try {
     await npmInitPkg(npmInitFile, templateDir);
   } catch (e) {
@@ -49,14 +51,12 @@ async function getGitRepo(arg) {
     const gitRepoApiUrl = `https://api.github.com/repos/${argGitRepo}`;
 
     let res1 = await fetch(gitRepoApiUrl);
-    let res2 = await fetch(gitRepoApiUrl + "/contents/npm-init.json");
-    let res3 = await fetch(gitRepoApiUrl + "/contents/template");
+    let res2 = await fetch(gitRepoApiUrl + '/contents/npm-init.json');
+    let res3 = await fetch(gitRepoApiUrl + '/contents/template');
     if (res1.ok && res2.ok && res3.ok) {
       gitRepo = argGitRepo;
     } else {
-      console.error(
-        "Error: Invalid git repo. It must have npm-init.json and template directory."
-      );
+      console.error('Error: Invalid git repo. It must have npm-init.json and template directory.');
     }
   }
 
@@ -65,9 +65,9 @@ async function getGitRepo(arg) {
 
 function updatePackageJson({ filePath, templateDir, targetDir, answers }) {
   const cwd = process.cwd();
-  const relativePath = filePath.replace(templateDir, "");
+  const relativePath = filePath.replace(templateDir, '');
   try {
-    const sourceJson = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const sourceJson = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     const packageJson = path.join(targetDir, relativePath.replace('.template', ''));
     const targetJson = JSON.parse(fs.readFileSync(packageJson, 'utf8'));
     Object.keys(sourceJson.devDependencies).forEach(pkg => {
@@ -82,14 +82,14 @@ function updatePackageJson({ filePath, templateDir, targetDir, answers }) {
 }
 
 function npmInitPkg(npmInitFile, templateDir) {
-  const npmInit = JSON.parse(fs.readFileSync(npmInitFile, "utf8"));
+  const npmInit = JSON.parse(fs.readFileSync(npmInitFile, 'utf8'));
 
   const questions = getQuestions(npmInit);
   return inquirer
     .prompt(questions)
     .then(answers => {
       const targetDir = answers.name || answers.projectName;
-      console.log("Copying files from template to", targetDir, answers);
+      console.log('Copying files from template to', targetDir, answers);
       walkDir(templateDir, filePath => {
         if (path.basename(filePath) === 'package.template.json') {
           updatePackageJson({ filePath, templateDir, targetDir, answers });
@@ -109,11 +109,11 @@ function getQuestions(npmInit) {
   console.log('npmInit', npmInit);
   const defaultPrompts = {
     projectName: {
-      type: "string",
+      type: 'string',
       required: true,
-      default: "my-component",
-      message: "Component Name"
-    }
+      default: 'my-component',
+      message: 'Component Name',
+    },
   };
   const prompts = Object.assign({}, defaultPrompts, npmInit.prompts);
   const questions = [];
@@ -123,10 +123,9 @@ function getQuestions(npmInit) {
     if (question.required) {
       question.validate = val => Promise.resolve(!!val);
     }
-    if (question.type === "string") {
-      question.type = "input";
-      question.filter = val =>
-        Promise.resolve(val.toLowerCase().replace(/\s+/g, "-"));
+    if (question.type === 'string') {
+      question.type = 'input';
+      question.filter = val => Promise.resolve(val.toLowerCase().replace(/\s+/g, '-'));
     }
     questions.push(question);
   }
@@ -137,10 +136,16 @@ function getQuestions(npmInit) {
  * copy files from template to project directory
  * params { templateDir, filePath, answers, npmInit }
  */
-function copyTemplate({ filePath = '', templateDir = '', targetDir = '', answers = {}, npmInit = {} }) {
+function copyTemplate({
+  filePath = '',
+  templateDir = '',
+  targetDir = '',
+  answers = {},
+  npmInit = {},
+}) {
   const cwd = process.cwd();
-  const relativePath = filePath.replace(templateDir, "");
-  const fileContents = fs.readFileSync(filePath, "utf8");
+  const relativePath = filePath.replace(templateDir, '');
+  const fileContents = fs.readFileSync(filePath, 'utf8');
 
   const outputPath = path.join(cwd, targetDir, relativePath);
   try {
