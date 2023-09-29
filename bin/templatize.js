@@ -20,7 +20,7 @@ const exec = (cmd, args) =>
       rej(new Error(err));
     });
     subp.on('close', code => {
-      if (code) rej(code);
+      if (code) rej(new Error(`Exited with ${code}`));
       else res(code);
     });
   });
@@ -68,12 +68,29 @@ Promise.resolve()
     // remove template scripts from package.json
     await exec('npx', [
       'replace-in-file',
-      '"publish:template": ".*",',
+      '/[ ]+"publish:template": ".*",\\n/',
+      '',
+      './template/package.json',
+      '--isRegex',
+    ]);
+    await exec('npx', [
+      'replace-in-file',
+      '/[ ]+"gh-pages": ".*",\\n/',
+      '',
+      './template/package.json',
+      '--isRegex',
+    ]);
+    await exec('npx', [
+      'replace-in-file',
+      '/[ ]+"replace-in-file": ".*",\\n/',
       '',
       './template/package.json',
       '--isRegex',
     ]);
 
+    await fsp.rm(path.join(TEMPLATE_DIR, 'bin', 'templatize.js'));
+
+    // throw new Error('test');
     // publish into template branch using gh-pages
     await exec('npx', ['gh-pages', '-d', 'template', '-b', 'template']);
     await fsp.rm(TEMPLATE_DIR, { recursive: true });
