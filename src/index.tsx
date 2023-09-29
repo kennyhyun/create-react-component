@@ -1,8 +1,6 @@
 import React from 'react';
 import MuiButton, { ButtonProps as MuiButtonProps } from '@mui/material/Button';
 
-export const Hello = () => <>Hello</>;
-
 interface ColorParams {
   primary?: boolean;
   secondary?: boolean;
@@ -45,4 +43,4 @@ export const Button = ({
   </MuiButton>
 );
 
-export default Hello;
+export default Button;
