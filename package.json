@@ -5,6 +5,7 @@
   "main": "build/main.js",
   "scripts": {
     "publish:template": "node bin/templatize.js",
+    "publish:pages": "npm run build-storybook && gh-pages -d storybook-static",
     "start:demo": "pnpm --filter demo start",
     "start": "run-p start:demo build:watch",
     "lint": "eslint src",

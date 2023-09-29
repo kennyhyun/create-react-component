@@ -75,13 +75,6 @@ Promise.resolve()
     ]);
     await exec('npx', [
       'replace-in-file',
-      '/[ ]+"gh-pages": ".*",\\n/',
-      '',
-      './template/package.json',
-      '--isRegex',
-    ]);
-    await exec('npx', [
-      'replace-in-file',
       '/[ ]+"replace-in-file": ".*",\\n/',
       '',
       './template/package.json',
