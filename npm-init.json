@@ -1,9 +1,9 @@
 {
 	"prompts": {
-		"name" : {
+		"dirName" : {
 			"type": "string",
 			"required": true,
-			"message": "Project Name"
+			"message": "Project Directory Name"
 		},
 		"description": {
 			"type": "input",
@@ -11,5 +11,5 @@
 			"message": "Project Description"
 		}
 	},
-	"completeMessage": "To get started:\n  cd {{name}}\n  npm install\n  npm start"
+	"completeMessage": "To get started:\n  cd {{dirName}}\n  npm install\n  npm start"
 }

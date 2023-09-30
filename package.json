@@ -1,9 +1,14 @@
 {
-  "name": "{{name}}",
-  "version": "0.0.1",
-  "description": "{{description}}",
+  "name": "@kennyhyun/create-react-component",
+  "version": "0.0.6",
+  "description": "An initiator for react component",
   "main": "build/main.js",
+  "bin": {
+    "create-react-component": "./bin/index.mjs"
+  },
   "scripts": {
+    "postinstall": "husky install",
+    "publish:npm": "node bin/npm-package.js",
     "publish:pages": "npm run build-storybook && gh-pages -d storybook-static",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix --max-warnings=0",
@@ -13,12 +18,13 @@
     "build:watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
-    "prepare": "husky install"
+    "build-storybook": "storybook build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+  },
   "devDependencies": {
     "@babel/core": "^7.22.20",
     "@babel/preset-env": "^7.22.20",
@@ -49,8 +55,6 @@
     "eslint-plugin-react": "^7.33.2",
     "gh-pages": "^6.0.0",
     "husky": "^8.0.3",
-    "inquirer": "^9.2.11",
-    "mustache": "^4.2.0",
     "npm-run-all": "^4.1.5",
     "prettier": "3.0.3",
     "prop-types": "^15.8.1",
