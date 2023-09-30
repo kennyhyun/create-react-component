@@ -4,7 +4,6 @@
   "description": "{{description}}",
   "main": "build/main.js",
   "scripts": {
-    "prepublish:pages": "npx ncp README.md src/README.mdx",
     "publish:pages": "npm run build-storybook && gh-pages -d storybook-static",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix --max-warnings=0",
