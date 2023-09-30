@@ -16,10 +16,12 @@ if (nodeVersion.split('.').shift() < 18) throw new Error('Please use node versio
 
 const exec = util.promisify(execSync);
 
-run();
+run().catch(e => console.error(e.message || e));
 
 async function run() {
   const gitRepo = await getGitRepo(process.argv[2]);
+  assert(gitRepo, `Invalid repo ${JSON.stringify(gitRepo)}; ${JSON.stringify(process.argv[2])}`);
+
   const tmpDir = path.join(process.cwd(), '.tmp');
   await fs.promises.rm(tmpDir, { recursive: true }).catch(console.log);
 
@@ -39,32 +41,33 @@ async function run() {
   }
 }
 
+const getJsonResp = async res => {
+  const resp = await res.json();
+  return resp;
+};
+
 // check if repo exists and has npm-init.json and template directory
-async function getGitRepo(arg) {
-  assert(arg, `Invalid repo ${JSON.stringify(arg)}`);
-  let gitRepo;
-
-  if (arg) {
-    if (arg.match(/^\.+\//)) return arg;
-    const argGitRepo = arg.match(/\//) ? arg : 'kennyhyun/create-react-component';
-    const gitRepoUrl = `https://github.com/${argGitRepo}`;
-    const gitRepoApiUrl = `https://api.github.com/repos/${argGitRepo}`;
-
-    let res1 = await fetch(gitRepoApiUrl);
-    let res2 = await fetch(gitRepoApiUrl + '/contents/npm-init.json');
-    let res3 = await fetch(gitRepoApiUrl + '/contents/template');
-    if (res1.ok && res2.ok && res3.ok) {
-      gitRepo = argGitRepo;
-    } else {
-      console.error('Error: Invalid git repo. It must have npm-init.json and template directory.');
-    }
-  }
-
-  return gitRepo;
+async function getGitRepo(arg = '') {
+  if (arg.match(/^\.+\//)) return arg;
+  const gitHubRepo = arg.match(/\//) ? arg : 'kennyhyun/create-react-component';
+  const gitHubRepoUrl = `https://github.com/${gitHubRepo}`;
+  const gitHubRepoApiUrl = `https://api.github.com/repos/${gitHubRepo}`;
+  const repoRes = await fetch(gitHubRepoApiUrl);
+  assert(
+    repoRes.ok,
+    `Invalid repo ${JSON.stringify(gitHubRepo)}, ${(await getJsonResp(repoRes)).message}`
+  );
+  const validRes = await fetch(gitHubRepoApiUrl + '/contents/npm-init.json');
+  assert(
+    validRes.ok,
+    `Invalid repo ${JSON.stringify(gitHubRepo)}, It must have npm-init.json in it.\n${
+      (await getJsonResp(validRes)).message
+    }`
+  );
+  return gitHubRepoUrl;
 }
 
 function updatePackageJson({ filePath, templateDir, targetDir, answers }) {
-  const cwd = process.cwd();
   const relativePath = filePath.replace(templateDir, '');
   try {
     const sourceJson = JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -111,7 +114,7 @@ function getQuestions(npmInit) {
     projectName: {
       type: 'string',
       required: true,
-      default: 'my-component',
+      default: 'my-react-component',
       message: 'Component Name',
     },
   };

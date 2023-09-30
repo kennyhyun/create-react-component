@@ -1,7 +1,7 @@
 {
   "name": "@kennyhyun/create-react-component",
   "version": "0.0.1",
-  "description": "",
+  "description": "An initiator for react component",
   "main": "build/main.js",
   "bin": {
     "create-react-component": "./bin/index.mjs"
