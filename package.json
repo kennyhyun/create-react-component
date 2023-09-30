@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "main": "build/main.js",
+  "bin": {
+    "create-react-component": "./bin/index.mjs"
+  },
   "scripts": {
     "publish:template": "node bin/templatize.js",
     "publish:pages": "npm run build-storybook && gh-pages -d storybook-static",
